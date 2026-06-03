@@ -2,10 +2,7 @@ FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
-COPY app/build/libs/*.jar app.jar
-
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
-USER appuser
+COPY build/libs/app-*.jar app.jar
 
 EXPOSE 8080
 

@@ -1,8 +1,8 @@
 plugins {
-    java
-    id("org.springframework.boot") version "4.0.6"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("org.sonarqube") version "5.1.0.4882"
+        id("java")
+        id("org.springframework.boot") version "3.4.0"
+        id("io.spring.dependency-management") version "1.1.7"
+        id("org.sonarqube") version "5.1.0.4882"
 }
 
 sonarqube {
@@ -28,16 +28,16 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly("org.postgresql:postgresql")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("io.micrometer:micrometer-registry-prometheus")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    runtimeOnly("com.h2database:h2")
-    implementation("io.micrometer:micrometer-registry-prometheus")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named<Test>("test") {
@@ -60,4 +60,7 @@ tasks.register("bootRunProd") {
         System.setProperty("spring.profiles.active", "prod")
     }
     finalizedBy("bootRun")
+}
+tasks.bootJar {
+    archiveFileName.set("app.jar")
 }

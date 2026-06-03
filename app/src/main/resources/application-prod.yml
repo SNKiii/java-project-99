@@ -17,7 +17,7 @@ spring:
     database: postgresql
     show-sql: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -26,7 +26,6 @@ spring:
         order_inserts: true
         order_updates: true
         format_sql: false
-
 
   h2:
     console:
@@ -52,7 +51,7 @@ server:
 logging:
   level:
     root: WARN
-    com.example: INFO
+    hexlet.code: INFO
     org.springframework: WARN
     org.hibernate: WARN
   file:
