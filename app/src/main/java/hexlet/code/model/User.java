@@ -41,8 +41,7 @@ public class User implements BaseEntity {
 
     @Column(unique = true)
     @NotBlank
-    @Email
-    @ToString.Include
+    @Email(regexp = ".+@.+\\..+", message = "Email должно быть корректным")
     private String email;
 
     @NotBlank
