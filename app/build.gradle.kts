@@ -43,6 +43,8 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.instancio:instancio-junit:4.0.0")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
 }
 
 tasks.named<Test>("test") {
