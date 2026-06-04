@@ -38,6 +38,11 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.openapitools:jackson-databind-nullable:0.2.6")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    testImplementation("org.instancio:instancio-junit:4.0.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
 }
 
 tasks.named<Test>("test") {

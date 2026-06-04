@@ -35,14 +35,8 @@ public class User implements BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
-    @Size(min = 2, max = 50)
-    @ToString.Include
     private String firstName;
 
-    @NotBlank
-    @Size(min = 2, max = 50)
-    @ToString.Include
     private String lastName;
 
     @Column(unique = true)
@@ -52,8 +46,8 @@ public class User implements BaseEntity {
     private String email;
 
     @NotBlank
-    @Size(min = 8)
-    private String password;
+    @Size(min = 3)
+    private String passwordDigest;
 
     @CreatedDate
     private LocalDate createdAt;
