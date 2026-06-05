@@ -41,7 +41,7 @@ public class User implements BaseEntity {
 
     @Column(unique = true)
     @NotBlank
-    @Email(regexp = ".+@.+\\..+", message = "Email должно быть корректным")
+            // @Email(message = "Email должен быть корректным")
     private String email;
 
     @NotBlank
