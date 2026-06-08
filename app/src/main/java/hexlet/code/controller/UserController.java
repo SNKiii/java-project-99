@@ -1,9 +1,8 @@
-package hexlet.code.controllers;
+package hexlet.code.controller;
 
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserResponseDTO;
 import hexlet.code.dto.UserUpdateDTO;
-import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.User;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
