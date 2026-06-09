@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonNullableMapper {
 
-    @Named("fromJsonNullable")
-    public <T> T fromJsonNullable(JsonNullable<T> jsonNullable) {
-        return jsonNullable != null ? jsonNullable.orElse(null) : null;
-    }
+//    @Named("fromJsonNullable")
+//    public <T> T fromJsonNullable(JsonNullable<T> jsonNullable) {
+//        return jsonNullable != null ? jsonNullable.orElse(null) : null;
+//    }
 
     @Condition
     public <T> boolean isPresent(JsonNullable<T> nullable) {

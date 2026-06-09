@@ -6,6 +6,7 @@ import hexlet.code.dto.TaskStatusUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class TaskStatusService {
 
     private final TaskStatusRepository taskStatusRepository;
     private final TaskStatusMapper taskStatusMapper;
+    private final TaskRepository taskRepository;
 
     public List<TaskStatusDTO> getAll() {
         return taskStatusRepository.findAll()
@@ -64,6 +66,13 @@ public class TaskStatusService {
 
     @Transactional
     public void delete(Long id) {
+        TaskStatus taskStatus = taskStatusRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("TaskStatus with id " + id + " not found"));
+
+        if (taskRepository.existsByTaskStatus(taskStatus)) {
+            throw new RuntimeException("Cannot delete status with existing tasks");
+        }
+
         taskStatusRepository.deleteById(id);
     }
 }

@@ -53,7 +53,6 @@ public class UserController {
     public UserResponseDTO update(@PathVariable Long id,
                                   @Valid @RequestBody UserUpdateDTO updateDTO,
                                   @AuthenticationPrincipal UserDetails currentUser) {
-        // Проверяем, что пользователь обновляет свой профиль
         User user = userService.getUserById(id);
         if (!user.getEmail().equals(currentUser.getUsername())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only update your own profile");

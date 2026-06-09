@@ -3,6 +3,7 @@ package hexlet.code.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -49,20 +50,25 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Публичные эндпоинты
                         .requestMatchers("/", "/welcome", "/index.html", "/static/**", "/assets/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/login").permitAll()
-                        .requestMatchers("/api/users").permitAll()  // Регистрация и список
-                        .requestMatchers("/api/task_statuses").permitAll()  // GET список статусов
-
-                        // Все остальные запросы требуют аутентификации
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/task_statuses").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/task_statuses/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/labels").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/labels/**").permitAll()
+                        .requestMatchers("/api/tasks/**").authenticated()
+                        .requestMatchers("/api/task_statuses/**").authenticated()
+                        .requestMatchers("/api/labels/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Отключаем frameOptions для H2 консоли
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
