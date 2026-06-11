@@ -32,20 +32,12 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('app/**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
 
       - name: Make gradlew executable
-        working-directory: app
         run: chmod +x gradlew
 
-      - name: Compile only (skip tests)
-        working-directory: app
-        run: ./gradlew compileJava compileTestJava -x test
-
-      - name: Run SonarQube analysis
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        working-directory: app
-        run: ./gradlew sonar -x test -x build \
-          -Dsonar.coverage.exclusions="**/dto/**, **/config/**, **/exception/**" \
-          -Dsonar.java.binaries=build/classes/java/main
+        run: ./gradlew sonar -x test -x build -Dsonar.skipTests=true
