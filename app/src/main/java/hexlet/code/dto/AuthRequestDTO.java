@@ -7,3 +7,4 @@ public class AuthRequestDTO {
     private String username;  // email пользователя
     private String password;
 }
+

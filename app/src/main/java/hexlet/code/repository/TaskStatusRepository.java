@@ -17,3 +17,4 @@ public interface TaskStatusRepository extends JpaRepository<TaskStatus, Long> {
     @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM Task t WHERE t.taskStatus = :status")
     boolean existsByTaskStatus(@Param("status") TaskStatus status);
 }
+

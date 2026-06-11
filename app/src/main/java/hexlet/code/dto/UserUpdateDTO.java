@@ -19,3 +19,4 @@ public class UserUpdateDTO {
     @Size(min = 3)
     private String password;
 }
+

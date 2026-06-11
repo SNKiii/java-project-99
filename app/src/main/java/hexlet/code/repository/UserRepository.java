@@ -16,3 +16,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM Task t WHERE t.assignee = :user")
     boolean existsByAssignee(@Param("user") User user);
 }
+

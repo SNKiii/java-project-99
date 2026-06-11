@@ -13,3 +13,4 @@ public class UserResponseDTO {
     private String lastName;
     private LocalDate createdAt;
 }
+
