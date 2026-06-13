@@ -1,3 +1,0 @@
-#!/bin/sh
-echo "=== DUMMY GRADLEW FOR HEXLET CI ==="
-exit 0
