@@ -4,7 +4,6 @@ services:
     runtime: image
     repo: https://github.com/SNKiii/java-project-99
     plan: free
-    rootDir: app  # ← ВАЖНО: указать корневую директорию
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -20,8 +19,8 @@ services:
         fromDatabase:
           name: app-db
           property: password
-    buildCommand: cd app && ./gradlew bootJar
-    startCommand: java -jar app/build/libs/app-0.0.1-SNAPSHOT.jar
+    buildCommand: ./gradlew bootJar
+    startCommand: java -jar build/libs/*.jar
 
 databases:
   - name: app-db

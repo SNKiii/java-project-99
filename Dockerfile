@@ -2,12 +2,11 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
 
-# Копируем файлы ИЗ ПАПКИ app
-COPY app/gradlew .
-COPY app/gradle gradle
-COPY app/build.gradle.kts .
-COPY app/settings.gradle.kts .
-COPY app/src src
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY src src
 
 RUN chmod +x gradlew
 RUN ./gradlew bootJar -x test
