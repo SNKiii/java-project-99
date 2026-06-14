@@ -44,8 +44,9 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.boot:spring-boot-test-autoconfigure")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<JavaCompile> {
@@ -69,3 +70,4 @@ sonarqube {
         property("sonar.host.url", "https://sonarcloud.io")
     }
 }
+

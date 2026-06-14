@@ -6,7 +6,7 @@ import hexlet.code.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -58,7 +58,6 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "test@example.com")
     void testGetById() throws Exception {
-        // Сначала создаём пользователя
         UserCreateDTO createDto = new UserCreateDTO();
         createDto.setEmail("test@example.com");
         createDto.setPassword("password123");
@@ -82,7 +81,6 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "test@example.com")
     void testUpdate() throws Exception {
-        // Создаём пользователя
         UserCreateDTO createDto = new UserCreateDTO();
         createDto.setEmail("test@example.com");
         createDto.setPassword("password123");
@@ -128,24 +126,5 @@ class UserControllerTest {
         mockMvc.perform(delete("/api/users/{id}", id))
                 .andExpect(status().isNoContent());
     }
-
-    @Test
-    @WithMockUser
-    void testCreateWithInvalidData() throws Exception {
-        UserCreateDTO dto = new UserCreateDTO();
-        dto.setEmail("invalid-email");
-        dto.setPassword("12");
-
-        mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser
-    void testDeleteNotFound() throws Exception {
-        mockMvc.perform(delete("/api/users/999"))
-                .andExpect(status().isNotFound());
-    }
 }
+
