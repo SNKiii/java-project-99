@@ -44,7 +44,3 @@ sonarqube {
 tasks.test {
     useJUnitPlatform()
 }
-
-tasks.withType<JavaCompile> {
-    options.compilerArgs.add("-Xlint:-options")
-}
