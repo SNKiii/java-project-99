@@ -28,7 +28,7 @@ public class TaskStatusService {
     public List<TaskStatusDTO> getAll() {
         return taskStatusRepository.findAll()
                 .stream()
-                .map(taskStatusMapper::toDto)
+                .map(taskStatusMapper::map)
                 .toList();
     }
 
@@ -36,14 +36,14 @@ public class TaskStatusService {
     public TaskStatusDTO getById(Long id) {
         TaskStatus taskStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TaskStatus with id " + id + " not found"));
-        return taskStatusMapper.toDto(taskStatus);
+        return taskStatusMapper.map(taskStatus);
     }
 
     @Transactional(readOnly = true)
     public TaskStatusDTO getBySlug(String slug) {
         TaskStatus taskStatus = taskStatusRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("TaskStatus with slug " + slug + " not found"));
-        return taskStatusMapper.toDto(taskStatus);
+        return taskStatusMapper.map(taskStatus);
     }
 
     @Transactional
@@ -55,9 +55,9 @@ public class TaskStatusService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Task status with name '" + createDTO.getName() + "' already exists");
         }
 
-        TaskStatus taskStatus = taskStatusMapper.toEntity(createDTO);
+        TaskStatus taskStatus = taskStatusMapper.map(createDTO);
         taskStatusRepository.save(taskStatus);
-        return taskStatusMapper.toDto(taskStatus);
+        return taskStatusMapper.map(taskStatus);
     }
 
     @Transactional
@@ -79,9 +79,9 @@ public class TaskStatusService {
             }
         }
 
-        taskStatusMapper.updateEntity(updateDTO, taskStatus);
+        taskStatusMapper.update(updateDTO, taskStatus);
         taskStatusRepository.save(taskStatus);
-        return taskStatusMapper.toDto(taskStatus);
+        return taskStatusMapper.map(taskStatus);
     }
 
     @Transactional

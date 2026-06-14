@@ -4,31 +4,29 @@ import hexlet.code.dto.LabelCreateDTO;
 import hexlet.code.dto.LabelDTO;
 import hexlet.code.dto.LabelUpdateDTO;
 import hexlet.code.model.Label;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
-@Component
-public class LabelMapper {
+@Mapper(
+        uses = {JsonNullableMapper.class},
+        componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
+public interface LabelMapper {
 
-    public Label toEntity(LabelCreateDTO dto) {
-        if (dto == null) return null;
-        Label label = new Label();
-        label.setName(dto.getName());
-        return label;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    Label map(LabelCreateDTO dto);
 
-    public LabelDTO toDto(Label label) {
-        if (label == null) return null;
-        LabelDTO dto = new LabelDTO();
-        dto.setId(label.getId());
-        dto.setName(label.getName());
-        dto.setCreatedAt(label.getCreatedAt());
-        return dto;
-    }
+    LabelDTO map(Label model);
 
-    public void updateEntity(LabelUpdateDTO dto, Label label) {
-        if (dto == null || label == null) return;
-        if (dto.getName() != null && dto.getName().isPresent()) {
-            label.setName(dto.getName().get());
-        }
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    void update(LabelUpdateDTO dto, @MappingTarget Label model);
 }

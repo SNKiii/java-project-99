@@ -26,7 +26,7 @@ public class LabelService {
     public List<LabelDTO> getAll() {
         return labelRepository.findAll()
                 .stream()
-                .map(labelMapper::toDto)
+                .map(labelMapper::map)
                 .toList();
     }
 
@@ -34,14 +34,14 @@ public class LabelService {
     public LabelDTO getById(Long id) {
         Label label = labelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
-        return labelMapper.toDto(label);
+        return labelMapper.map(label);
     }
 
     @Transactional(readOnly = true)
     public LabelDTO getByName(String name) {
         Label label = labelRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Label with name " + name + " not found"));
-        return labelMapper.toDto(label);
+        return labelMapper.map(label);
     }
 
     @Transactional
@@ -49,9 +49,9 @@ public class LabelService {
         if (labelRepository.existsByName(createDTO.getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Label with name '" + createDTO.getName() + "' already exists");
         }
-        Label label = labelMapper.toEntity(createDTO);
+        Label label = labelMapper.map(createDTO);
         labelRepository.save(label);
-        return labelMapper.toDto(label);
+        return labelMapper.map(label);
     }
 
     @Transactional
@@ -66,9 +66,9 @@ public class LabelService {
             }
         }
 
-        labelMapper.updateEntity(updateDTO, label);
+        labelMapper.update(updateDTO, label);
         labelRepository.save(label);
-        return labelMapper.toDto(label);
+        return labelMapper.map(label);
     }
 
     @Transactional

@@ -28,7 +28,7 @@ public class UserService {
     public List<UserResponseDTO> getAll() {
         return userRepository.findAll()
                 .stream()
-                .map(userMapper::toDto)
+                .map(userMapper::map)
                 .toList();
     }
 
@@ -36,7 +36,7 @@ public class UserService {
     public UserResponseDTO getById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        return userMapper.toDto(user);
+        return userMapper.map(user);
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +49,7 @@ public class UserService {
     public UserResponseDTO getByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
-        return userMapper.toDto(user);
+        return userMapper.map(user);
     }
 
     @Transactional(readOnly = true)
@@ -62,9 +62,9 @@ public class UserService {
         if (userRepository.existsByEmail(createDTO.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User with email '" + createDTO.getEmail() + "' already exists");
         }
-        User user = userMapper.toEntity(createDTO);
+        User user = userMapper.map(createDTO);
         userRepository.save(user);
-        return userMapper.toDto(user);
+        return userMapper.map(user);
     }
 
     @Transactional
@@ -77,9 +77,9 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
-        userMapper.updateEntity(updateDTO, user);
+        userMapper.update(updateDTO, user);
         userRepository.save(user);
-        return userMapper.toDto(user);
+        return userMapper.map(user);
     }
 
     @Transactional

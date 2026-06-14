@@ -23,53 +23,42 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.postgresql:postgresql")
+
     compileOnly("org.projectlombok:lombok:1.18.36")
-    testCompileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
-    testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+
     implementation("org.openapitools:jackson-databind-nullable:0.2.6")
+
     annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
-
 
 tasks.withType<JavaCompile> {
     options.compilerArgs = listOf(
         "-Amapstruct.defaultComponentModel=spring",
         "-Amapstruct.unmappedTargetPolicy=IGNORE",
+        "-Amapstruct.verbose=true",
         "-parameters"
     )
     options.encoding = "UTF-8"
-    options.release.set(25)
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        showExceptions = true
-        showCauses = true
-        showStackTraces = true
-    }
-    jvmArgs("--enable-preview")
-}
-
-tasks.bootJar {
-    manifest {
-        attributes["Start-Class"] = "hexlet.code.AppApplication"
-    }
 }
 
 sonarqube {
@@ -77,6 +66,5 @@ sonarqube {
         property("sonar.projectKey", "SNKiii_java-project-99")
         property("sonar.organization", "snkiii")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.java.source", "25")
     }
 }

@@ -33,7 +33,7 @@ public class TaskService {
 
         return taskRepository.findAll(spec)
                 .stream()
-                .map(taskMapper::toDto)
+                .map(taskMapper::map)
                 .toList();
     }
 
@@ -41,23 +41,23 @@ public class TaskService {
     public TaskDTO getById(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
-        return taskMapper.toDto(task);
+        return taskMapper.map(task);
     }
 
     @Transactional
     public TaskDTO create(TaskCreateDTO createDTO) {
-        Task task = taskMapper.toEntity(createDTO);
+        Task task = taskMapper.map(createDTO);
         taskRepository.save(task);
-        return taskMapper.toDto(task);
+        return taskMapper.map(task);
     }
 
     @Transactional
     public TaskDTO update(Long id, TaskUpdateDTO updateDTO) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
-        taskMapper.updateEntity(updateDTO, task);
+        taskMapper.update(updateDTO, task);
         taskRepository.save(task);
-        return taskMapper.toDto(task);
+        return taskMapper.map(task);
     }
 
     @Transactional
