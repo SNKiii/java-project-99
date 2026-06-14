@@ -14,12 +14,19 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+        uses = {JsonNullableMapper.class},
+        componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public abstract class TaskMapper {
 
     @Autowired
@@ -45,9 +52,9 @@ public abstract class TaskMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "taskStatus", source = "status", qualifiedByName = "statusToModel")
-    @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "userToModel")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "labelsToModel")
+    @Mapping(target = "taskStatus", source = "status", qualifiedByName = "statusToModelAsync")
+    @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "userToModelAsync")
+    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "labelsToModelAsync")
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task model);
 
     @Named("statusToModel")
@@ -63,18 +70,36 @@ public abstract class TaskMapper {
     }
 
     @Named("labelsToModel")
-    protected Set<Label> labelsToModel(Set<Long> ids) {
+    protected List<Label> labelsToModel(List<Long> ids) {
         if (ids == null) return null;
         return ids.stream()
                 .map(id -> labelRepository.findById(id).orElse(null))
-                .collect(Collectors.toSet());
+                .toList();
     }
 
     @Named("labelsToIds")
-    protected Set<Long> labelsToIds(Set<Label> labels) {
+    protected List<Long> labelsToIds(List<Label> labels) {
         if (labels == null) return null;
         return labels.stream()
                 .map(Label::getId)
-                .collect(Collectors.toSet());
+                .toList();
+    }
+
+    @Named("statusToModelAsync")
+    protected TaskStatus statusToModelAsync(JsonNullable<String> slug) {
+        if (slug == null || !slug.isPresent()) return null;
+        return statusToModel(slug.orElse(null));
+    }
+
+    @Named("userToModelAsync")
+    protected User userToModelAsync(JsonNullable<Long> id) {
+        if (id == null || !id.isPresent()) return null;
+        return userToModel(id.orElse(null));
+    }
+
+    @Named("labelsToModelAsync")
+    protected List<Label> labelsToModelAsync(JsonNullable<List<Long>> ids) {
+        if (ids == null || !ids.isPresent()) return null;
+        return labelsToModel(ids.orElse(null));
     }
 }
