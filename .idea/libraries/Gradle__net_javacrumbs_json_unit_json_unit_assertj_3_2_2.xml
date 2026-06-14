@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: net.javacrumbs.json-unit:json-unit-assertj:3.2.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="net.javacrumbs.json-unit" artifactId="json-unit-assertj" version="3.2.2" baseVersion="3.2.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.javacrumbs.json-unit/json-unit-assertj/3.2.2/f205f569b28dfe12bb1249af0da7980d35b5c829/json-unit-assertj-3.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

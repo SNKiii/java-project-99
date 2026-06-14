@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: org.instancio:instancio-core:4.0.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.instancio" artifactId="instancio-core" version="4.0.0" baseVersion="4.0.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.instancio/instancio-core/4.0.0/a76d7c3e6fbadf5c7bf9842802c1e36b7cb5fc61/instancio-core-4.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
