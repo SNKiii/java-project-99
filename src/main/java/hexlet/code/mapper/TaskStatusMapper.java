@@ -28,3 +28,4 @@ public interface TaskStatusMapper {
     @Mapping(target = "createdAt", ignore = true)
     void update(TaskStatusUpdateDTO dto, @MappingTarget TaskStatus model);
 }
+

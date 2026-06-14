@@ -25,7 +25,7 @@ public abstract class UserMapper {
     private PasswordEncoder passwordEncoder;
 
     @Named("encode")
-    String encode(String password) {
+    protected String encode(String password) {
         return password != null ? passwordEncoder.encode(password) : null;
     }
 
