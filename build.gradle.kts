@@ -31,15 +31,15 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.postgresql:postgresql")
 
-    compileOnly("org.projectlombok:lombok:1.18.36")
-    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    compileOnly("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
     implementation("org.openapitools:jackson-databind-nullable:0.2.6")
-
-    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
