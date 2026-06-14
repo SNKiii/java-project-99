@@ -3,139 +3,100 @@ package hexlet.code.mapper;
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
 import hexlet.code.dto.TaskUpdateDTO;
-import hexlet.code.model.Label;
 import hexlet.code.model.Task;
-import hexlet.code.model.TaskStatus;
-import hexlet.code.model.User;
+import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Mapper(
-        uses = {JsonNullableMapper.class},
-        componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
-)
-public abstract class TaskMapper {
-
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
+@Component
+public class TaskMapper {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
     private LabelRepository labelRepository;
 
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "labelIdsToLabels")
-    @Mapping(target = "taskStatus", source = "status", qualifiedByName = "slugToTaskStatus")
-    @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "idToUser")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    public abstract Task map(TaskCreateDTO dto);
+    public Task toEntity(TaskCreateDTO dto) {
+        if (dto == null) return null;
+        Task task = new Task();
+        task.setIndex(dto.getIndex());
+        task.setTitle(dto.getTitle());
+        task.setContent(dto.getContent());
 
-    @Mapping(target = "assigneeId", source = "assignee.id")
-    @Mapping(target = "status", source = "taskStatus.slug")
-    @Mapping(target = "labelIds", source = "labels", qualifiedByName = "labelsToLabelIds")
-    public abstract TaskDTO map(Task model);
-
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "jsonNullableLabelIdsToLabels")
-    @Mapping(target = "taskStatus", source = "status", qualifiedByName = "jsonNullableSlugToTaskStatus")
-    @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "jsonNullableIdToUser")
-    @Mapping(target = "title", source = "title", qualifiedByName = "jsonNullableStringToString")
-    @Mapping(target = "content", source = "content", qualifiedByName = "jsonNullableStringToString")
-    @Mapping(target = "index", source = "index", qualifiedByName = "jsonNullableIntegerToInteger")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    public abstract void update(TaskUpdateDTO dto, @MappingTarget Task model);
-
-    @Named("slugToTaskStatus")
-    public TaskStatus slugToTaskStatus(String slug) {
-        if (slug == null) {
-            return null;
+        if (dto.getAssigneeId() != null) {
+            userRepository.findById(dto.getAssigneeId()).ifPresent(task::setAssignee);
         }
-        return taskStatusRepository.findBySlug(slug).orElse(null);
+        if (dto.getStatus() != null) {
+            taskStatusRepository.findBySlug(dto.getStatus()).ifPresent(task::setTaskStatus);
+        }
+        if (dto.getLabelIds() != null) {
+            task.setLabels(dto.getLabelIds().stream()
+                    .map(labelRepository::findById)
+                    .filter(java.util.Optional::isPresent)
+                    .map(java.util.Optional::get)
+                    .collect(Collectors.toList()));
+        }
+
+        return task;
     }
 
-    @Named("idToUser")
-    public User idToUser(Long id) {
-        if (id == null) {
-            return null;
+    public TaskDTO toDto(Task task) {
+        if (task == null) return null;
+        TaskDTO dto = new TaskDTO();
+        dto.setId(task.getId());
+        dto.setIndex(task.getIndex());
+        dto.setTitle(task.getTitle());
+        dto.setContent(task.getContent());
+        dto.setCreatedAt(task.getCreatedAt());
+
+        if (task.getAssignee() != null) {
+            dto.setAssigneeId(task.getAssignee().getId());
         }
-        return userRepository.findById(id).orElse(null);
+        if (task.getTaskStatus() != null) {
+            dto.setStatus(task.getTaskStatus().getSlug());
+        }
+        if (task.getLabels() != null) {
+            dto.setLabelIds(task.getLabels().stream()
+                    .map(Label::getId)
+                    .collect(Collectors.toList()));
+        }
+
+        return dto;
     }
 
-    @Named("labelIdsToLabels")
-    public List<Label> labelIdsToLabels(List<Long> labelIds) {
-        if (labelIds == null) {
-            return null;
-        }
-        return labelIds.stream()
-                .map(id -> labelRepository.findById(id).orElse(null))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
+    public void updateEntity(TaskUpdateDTO dto, Task task) {
+        if (dto == null || task == null) return;
 
-    @Named("labelsToLabelIds")
-    public List<Long> labelsToLabelIds(List<Label> labels) {
-        if (labels == null) {
-            return null;
+        if (dto.getIndex() != null && dto.getIndex().isPresent()) {
+            task.setIndex(dto.getIndex().get());
         }
-        return labels.stream()
-                .map(Label::getId)
-                .collect(Collectors.toList());
-    }
-
-    @Named("jsonNullableSlugToTaskStatus")
-    public TaskStatus jsonNullableSlugToTaskStatus(JsonNullable<String> slug) {
-        if (slug == null || !slug.isPresent()) {
-            return null;
+        if (dto.getTitle() != null && dto.getTitle().isPresent()) {
+            task.setTitle(dto.getTitle().get());
         }
-        return taskStatusRepository.findBySlug(slug.get()).orElse(null);
-    }
-
-    @Named("jsonNullableIdToUser")
-    public User jsonNullableIdToUser(JsonNullable<Long> id) {
-        if (id == null || !id.isPresent()) {
-            return null;
+        if (dto.getContent() != null && dto.getContent().isPresent()) {
+            task.setContent(dto.getContent().get());
         }
-        return userRepository.findById(id.get()).orElse(null);
-    }
-
-    @Named("jsonNullableLabelIdsToLabels")
-    public List<Label> jsonNullableLabelIdsToLabels(JsonNullable<List<Long>> labelIds) {
-        if (labelIds == null || !labelIds.isPresent()) {
-            return null;
+        if (dto.getAssigneeId() != null && dto.getAssigneeId().isPresent()) {
+            userRepository.findById(dto.getAssigneeId().get()).ifPresent(task::setAssignee);
         }
-        return labelIdsToLabels(labelIds.get());
-    }
-
-    @Named("jsonNullableStringToString")
-    public String jsonNullableStringToString(JsonNullable<String> jsonNullable) {
-        if (jsonNullable == null) {
-            return null;
+        if (dto.getStatus() != null && dto.getStatus().isPresent()) {
+            taskStatusRepository.findBySlug(dto.getStatus().get()).ifPresent(task::setTaskStatus);
         }
-        return jsonNullable.orElse(null);
-    }
-
-    @Named("jsonNullableIntegerToInteger")
-    public Integer jsonNullableIntegerToInteger(JsonNullable<Integer> jsonNullable) {
-        if (jsonNullable == null) {
-            return null;
+        if (dto.getLabelIds() != null && dto.getLabelIds().isPresent()) {
+            task.setLabels(dto.getLabelIds().get().stream()
+                    .map(labelRepository::findById)
+                    .filter(java.util.Optional::isPresent)
+                    .map(java.util.Optional::get)
+                    .collect(Collectors.toList()));
         }
-        return jsonNullable.orElse(null);
     }
 }
