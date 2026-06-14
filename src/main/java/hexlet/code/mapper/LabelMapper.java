@@ -4,37 +4,31 @@ import hexlet.code.dto.LabelCreateDTO;
 import hexlet.code.dto.LabelDTO;
 import hexlet.code.dto.LabelUpdateDTO;
 import hexlet.code.model.Label;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.stereotype.Component;
 
-@Mapper(
-        uses = {JsonNullableMapper.class},
-        componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
-)
-public abstract class LabelMapper {
+@Component
+public class LabelMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "tasks", ignore = true)
-    public abstract Label map(LabelCreateDTO dto);
+    public Label toEntity(LabelCreateDTO dto) {
+        if (dto == null) return null;
+        Label label = new Label();
+        label.setName(dto.getName());
+        return label;
+    }
 
-    public abstract LabelDTO map(Label model);
+    public LabelDTO toDto(Label label) {
+        if (label == null) return null;
+        LabelDTO dto = new LabelDTO();
+        dto.setId(label.getId());
+        dto.setName(label.getName());
+        dto.setCreatedAt(label.getCreatedAt());
+        return dto;
+    }
 
-    @Mapping(target = "name", source = "name", qualifiedByName = "fromJsonNullable")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "tasks", ignore = true)
-    public abstract void update(LabelUpdateDTO dto, @MappingTarget Label model);
-
-    @Named("fromJsonNullable")
-    public String fromJsonNullable(JsonNullable<String> jsonNullable) {
-        return jsonNullable != null ? jsonNullable.orElse(null) : null;
+    public void updateEntity(LabelUpdateDTO dto, Label label) {
+        if (dto == null || label == null) return;
+        if (dto.getName() != null && dto.getName().isPresent()) {
+            label.setName(dto.getName().get());
+        }
     }
 }

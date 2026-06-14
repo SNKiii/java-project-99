@@ -23,6 +23,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
+    @Transactional(readOnly = true)
     public List<TaskDTO> getAll(TaskParamsDTO params) {
         Specification<Task> spec = Specification
                 .where(TaskSpecification.titleContains(params.getTitleCont()))
@@ -36,6 +37,7 @@ public class TaskService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public TaskDTO getById(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
