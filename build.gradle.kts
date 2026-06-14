@@ -11,9 +11,6 @@ version = "0.0.1-SNAPSHOT"
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
 }
 
 repositories {
@@ -49,5 +46,5 @@ tasks.test {
 }
 
 tasks.withType<JavaCompile> {
-    options.release.set(21)
+    options.compilerArgs.add("-Xlint:-options")
 }
