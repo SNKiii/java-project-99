@@ -4,7 +4,6 @@ spring:
     username: ${DB_USERNAME:prod_user}
     password: ${DB_PASSWORD:prod_password}
     driver-class-name: org.postgresql.Driver
-
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -12,7 +11,6 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       pool-name: HikariPool
-
   jpa:
     database: postgresql
     show-sql: false
@@ -26,7 +24,6 @@ spring:
         order_inserts: true
         order_updates: true
         format_sql: false
-
   h2:
     console:
       enabled: false
