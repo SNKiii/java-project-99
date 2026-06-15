@@ -2,6 +2,8 @@ package hexlet.code;
 
 import tools.jackson.databind.ObjectMapper;
 import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.config.JWTService;
+import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -37,6 +38,12 @@ class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JWTService jwtService;
+
+    private User testUser;
+    private String token;
+
     @BeforeEach
     void setUp() {
 
@@ -47,74 +54,55 @@ class UserControllerTest {
 
         taskRepository.deleteAll();
         userRepository.deleteAll();
+
+
+        testUser = new User();
+        testUser.setEmail("test@example.com");
+        testUser.setPasswordDigest("password123");
+        testUser.setFirstName("Test");
+        testUser.setLastName("User");
+        userRepository.save(testUser);
+
+
+        token = jwtService.generateToken(testUser.getEmail());
     }
 
     @Test
-    @WithMockUser
     void testGetAll() throws Exception {
-        mockMvc.perform(get("/api/users"))
+        mockMvc.perform(get("/api/users")
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testCreate() throws Exception {
         UserCreateDTO dto = new UserCreateDTO();
-        dto.setEmail("test@example.com");
+        dto.setEmail("newuser@example.com");
         dto.setPassword("password123");
-        dto.setFirstName("Test");
+        dto.setFirstName("New");
         dto.setLastName("User");
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value("test@example.com"));
+                .andExpect(jsonPath("$.email").value("newuser@example.com"));
     }
 
     @Test
-    @WithMockUser(username = "test@example.com")
     void testGetById() throws Exception {
-        UserCreateDTO createDto = new UserCreateDTO();
-        createDto.setEmail("test@example.com");
-        createDto.setPassword("password123");
-        createDto.setFirstName("Test");
-        createDto.setLastName("User");
-
-        String response = mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createDto)))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        Long id = objectMapper.readTree(response).get("id").asLong();
-
-        mockMvc.perform(get("/api/users/{id}", id))
+        mockMvc.perform(get("/api/users/{id}", testUser.getId())
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("test@example.com"));
     }
 
     @Test
-    @WithMockUser(username = "test@example.com")
     void testUpdate() throws Exception {
-        UserCreateDTO createDto = new UserCreateDTO();
-        createDto.setEmail("test@example.com");
-        createDto.setPassword("password123");
-        createDto.setFirstName("Test");
-        createDto.setLastName("User");
-
-        String response = mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createDto)))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        Long id = objectMapper.readTree(response).get("id").asLong();
-
         String updateBody = "{\"firstName\":\"UpdatedName\"}";
 
-        mockMvc.perform(put("/api/users/{id}", id)
+        mockMvc.perform(put("/api/users/{id}", testUser.getId())
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateBody))
                 .andExpect(status().isOk())
@@ -122,27 +110,14 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "test@example.com")
     void testDelete() throws Exception {
-        UserCreateDTO createDto = new UserCreateDTO();
-        createDto.setEmail("test@example.com");
-        createDto.setPassword("password123");
-        createDto.setFirstName("Test");
-        createDto.setLastName("User");
-
-        String response = mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createDto)))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        Long id = objectMapper.readTree(response).get("id").asLong();
-
-        mockMvc.perform(delete("/api/users/{id}", id))
+        mockMvc.perform(delete("/api/users/{id}", testUser.getId())
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
 }
+
+
 
 
 
