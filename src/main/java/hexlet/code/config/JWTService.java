@@ -15,7 +15,7 @@ public class JWTService {
     @Value("${jwt.secret:secret_key_for_jwt_token_generation_1234567890}")
     private String secret;
 
-    @Value("${jwt.expiration:86400000}") // 24 часа по умолчанию
+    @Value("${jwt.expiration:86400000}")
     private long expiration;
 
     private SecretKey getSigningKey() {

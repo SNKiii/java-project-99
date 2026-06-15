@@ -3,3 +3,27 @@
 [![SonarQube](https://github.com/SNKiii/java-project-99/actions/workflows/build.yml/badge.svg)](https://github.com/SNKiii/java-project-99/actions/workflows/build.yml)
 
 work app -> https://java-project-99-1-6apk.onrender.com
+
+REST API приложение на Spring Boot 4 с JWT аутентификацией и управлением задачами.
+
+## Технологии
+
+- **Java 25**
+- **Spring Boot 4.0.6**
+- **Spring Security 7.0.5**
+- **Spring Data JPA**
+- **Hibernate 7.2.12**
+- **MapStruct 1.6.3**
+- **Lombok 1.18.42**
+- **JJWT 0.12.6**
+- **PostgreSQL / H2**
+- **Gradle 9.1.0 / 9.5.0**
+
+## Функциональность
+
+- CRUD операции для пользователей
+- CRUD операции для задач
+- CRUD операции для статусов задач
+- CRUD операции для меток
+- JWT аутентификация
+- Фильтрация задач по параметрам
