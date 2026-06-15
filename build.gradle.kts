@@ -60,6 +60,7 @@ tasks.withType<JavaCompile> {
 
 tasks.test {
     useJUnitPlatform()
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
 
 sonarqube {
@@ -69,6 +70,7 @@ sonarqube {
         property("sonar.host.url", "https://sonarcloud.io")
     }
 }
+
 
 
 

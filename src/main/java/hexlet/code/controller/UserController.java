@@ -53,6 +53,10 @@ public class UserController {
     public UserResponseDTO update(@PathVariable Long id,
                                   @Valid @RequestBody UserUpdateDTO updateDTO,
                                   @AuthenticationPrincipal UserDetails currentUser) {
+        if (currentUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is missing or invalid");
+        }
+
         User user = userService.getUserById(id);
         if (!user.getEmail().equals(currentUser.getUsername())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only update your own profile");
@@ -63,6 +67,10 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
+        if (currentUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is missing or invalid");
+        }
+
         User user = userService.getUserById(id);
         if (!user.getEmail().equals(currentUser.getUsername())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only delete your own profile");
@@ -70,3 +78,4 @@ public class UserController {
         userService.delete(id);
     }
 }
+
