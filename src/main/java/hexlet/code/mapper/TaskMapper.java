@@ -42,19 +42,19 @@ public abstract class TaskMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "taskStatus", source = "status", qualifiedByName = "statusToModel")
     @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "userToModel")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "labelsToModel")
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "labelsToModel") // Изменен source
     public abstract Task map(TaskCreateDTO dto);
 
     @Mapping(target = "status", source = "taskStatus.slug")
     @Mapping(target = "assigneeId", source = "assignee.id")
-    @Mapping(target = "labelIds", source = "labels", qualifiedByName = "labelsToIds")
+    @Mapping(target = "taskLabelIds", source = "labels", qualifiedByName = "labelsToIds") // Изменен target
     public abstract TaskDTO map(Task model);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "taskStatus", source = "status", qualifiedByName = "statusToModelAsync")
     @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "userToModelAsync")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "labelsToModelAsync")
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "labelsToModelAsync") // Изменен source
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task model);
 
     @Named("statusToModel")
@@ -103,4 +103,5 @@ public abstract class TaskMapper {
         return labelsToModel(ids.orElse(null));
     }
 }
+
 
