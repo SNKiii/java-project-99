@@ -8,8 +8,7 @@ import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication; // Изменен импорт
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,13 +51,15 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserResponseDTO update(@PathVariable Long id,
                                   @Valid @RequestBody UserUpdateDTO updateDTO,
-                                  @AuthenticationPrincipal UserDetails currentUser) {
-        if (currentUser == null) {
+                                  Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is missing or invalid");
         }
 
         User user = userService.getUserById(id);
-        if (!user.getEmail().equals(currentUser.getUsername())) {
+
+        if (!user.getEmail().equals(authentication.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only update your own profile");
         }
         return userService.update(id, updateDTO);
@@ -66,16 +67,18 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
-        if (currentUser == null) {
+    public void delete(@PathVariable Long id, Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is missing or invalid");
         }
 
         User user = userService.getUserById(id);
-        if (!user.getEmail().equals(currentUser.getUsername())) {
+        if (!user.getEmail().equals(authentication.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only delete your own profile");
         }
         userService.delete(id);
     }
 }
+
 
