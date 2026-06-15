@@ -23,7 +23,10 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "jwt.secret=secret_key_for_jwt_token_generation_1234567890_hexlet_project",
+        "jwt.expiration=86400000"
+})
 @AutoConfigureMockMvc
 class UserControllerTest {
 
@@ -119,6 +122,7 @@ class UserControllerTest {
                 .andExpect(status().isNoContent());
     }
 }
+
 
 
 
