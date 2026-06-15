@@ -67,7 +67,6 @@ class UserControllerTest {
         testUser.setLastName("User");
         userRepository.save(testUser);
 
-        // Генерируем реальный JWT-токен для фильтра
         token = jwtService.generateToken(testUser.getEmail());
     }
 
@@ -120,6 +119,7 @@ class UserControllerTest {
                 .andExpect(status().isNoContent());
     }
 }
+
 
 
 

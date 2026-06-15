@@ -52,9 +52,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         } finally {
+
             filterChain.doFilter(request, response);
         }
     }
 }
+
 
 
