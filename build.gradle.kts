@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-json")
 
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
@@ -36,16 +37,14 @@ dependencies {
 
     annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
+    implementation("org.openapitools:jackson-databind-nullable:0.2.10")
+
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
-    implementation("org.openapitools:jackson-databind-nullable:0.2.6")
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-    testImplementation("org.springframework.boot:spring-boot-test-autoconfigure")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 }
 
@@ -70,4 +69,6 @@ sonarqube {
         property("sonar.host.url", "https://sonarcloud.io")
     }
 }
+
+
 

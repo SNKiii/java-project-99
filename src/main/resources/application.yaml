@@ -5,6 +5,8 @@ spring:
     name: java-project-99
   jpa:
     open-in-view: false
+  jackson:
+    use-jackson2-defaults: true
 
 management:
   endpoints:

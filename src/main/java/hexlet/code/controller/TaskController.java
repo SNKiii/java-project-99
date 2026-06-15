@@ -4,11 +4,14 @@ import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
 import hexlet.code.dto.TaskParamsDTO;
 import hexlet.code.dto.TaskUpdateDTO;
-import hexlet.code.service.TaskService;
+import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Task;
+import hexlet.code.repository.TaskRepository;
+import hexlet.code.specification.TaskSpecification;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,40 +29,60 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskController {
 
-    private final TaskService taskService;
+    private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
+    private final TaskSpecification taskSpecification;
 
-    @GetMapping
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public List<TaskDTO> index(TaskParamsDTO params) {
-        return taskService.getAll(params);
+        Specification<Task> spec = taskSpecification.build(params);
+
+        List<Task> tasks = taskRepository.findAll(spec);
+        return tasks.stream()
+                .map(taskMapper::map)
+                .toList();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public TaskDTO show(@PathVariable Long id) {
-        return taskService.getById(id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Task with id " + id + " not found"
+                ));
+        return taskMapper.map(task);
     }
 
-    @PostMapping
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAuthenticated()")
-    public TaskDTO create(@Valid @RequestBody TaskCreateDTO createDTO) {
-        return taskService.create(createDTO);
+    public TaskDTO create(@Valid @RequestBody TaskCreateDTO dto) {
+        Task task = taskMapper.map(dto);
+        taskRepository.save(task);
+        return taskMapper.map(task);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
-    public TaskDTO update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDTO updateDTO) {
-        return taskService.update(id, updateDTO);
+    public TaskDTO update(@Valid @RequestBody TaskUpdateDTO dto, @PathVariable Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Task with id " + id + " not found"
+                ));
+        taskMapper.update(dto, task);
+        taskRepository.save(task);
+        return taskMapper.map(task);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable Long id) {
-        taskService.delete(id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Task with id " + id + " not found"
+                ));
+        taskRepository.delete(task);
     }
 }
+
+

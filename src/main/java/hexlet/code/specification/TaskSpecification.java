@@ -1,16 +1,38 @@
 package hexlet.code.specification;
 
+import hexlet.code.dto.TaskParamsDTO;
 import hexlet.code.model.Task;
-import hexlet.code.model.Label;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
+import jakarta.persistence.criteria.JoinType;
 
 @Component
 public class TaskSpecification {
 
+    public Specification<Task> build(TaskParamsDTO params) {
+        if (params == null) {
+            return (root, query, cb) -> cb.conjunction();
+        }
+
+        Specification<Task> fetchSpec = (root, query, cb) -> {
+            if (Long.class != query.getResultType() && long.class != query.getResultType()) {
+                root.fetch("labels", JoinType.LEFT);
+                root.fetch("taskStatus", JoinType.LEFT);
+                root.fetch("assignee", JoinType.LEFT);
+            }
+            return cb.conjunction();
+        };
+
+        return Specification.<Task>where(fetchSpec)
+                .and(titleContains(params.getTitleCont()))
+                .and(assigneeIdEquals(params.getAssigneeId()))
+                .and(statusEquals(params.getStatus()))
+                .and(labelIdEquals(params.getLabelId()));
+    }
+
     public static Specification<Task> titleContains(String title) {
         if (title == null || title.isEmpty()) {
-            return null;
+            return (root, query, cb) -> cb.conjunction();
         }
         return (root, query, cb) ->
                 cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
@@ -18,7 +40,7 @@ public class TaskSpecification {
 
     public static Specification<Task> assigneeIdEquals(Long assigneeId) {
         if (assigneeId == null) {
-            return null;
+            return (root, query, cb) -> cb.conjunction();
         }
         return (root, query, cb) ->
                 cb.equal(root.get("assignee").get("id"), assigneeId);
@@ -26,7 +48,7 @@ public class TaskSpecification {
 
     public static Specification<Task> statusEquals(String statusSlug) {
         if (statusSlug == null || statusSlug.isEmpty()) {
-            return null;
+            return (root, query, cb) -> cb.conjunction();
         }
         return (root, query, cb) ->
                 cb.equal(root.get("taskStatus").get("slug"), statusSlug);
@@ -34,11 +56,16 @@ public class TaskSpecification {
 
     public static Specification<Task> labelIdEquals(Long labelId) {
         if (labelId == null) {
-            return null;
+            return (root, query, cb) -> cb.conjunction();
         }
         return (root, query, cb) -> {
+            query.distinct(true);
             var labelsJoin = root.join("labels");
             return cb.equal(labelsJoin.get("id"), labelId);
         };
     }
 }
+
+
+
+
