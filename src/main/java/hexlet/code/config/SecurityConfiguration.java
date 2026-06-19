@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @AllArgsConstructor
+@SuppressWarnings("java:S4502")
 public class SecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
