@@ -92,7 +92,8 @@ class TaskStatusControllerTest {
         mockMvc.perform(post("/api/task_statuses")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(duplicateDto)))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("already exists")));
     }
 }
 

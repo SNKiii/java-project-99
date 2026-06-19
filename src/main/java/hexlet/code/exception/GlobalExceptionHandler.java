@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,12 @@ public class GlobalExceptionHandler {
         log.error("Data integrity violation: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Data integrity violation: " + e.getMostSpecificCause().getMessage());
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleResponseStatus(ResponseStatusException e) {
+        log.warn("Response status exception: {}", e.getMessage());
+        return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
     }
 
     @ExceptionHandler(AuthenticationException.class)
