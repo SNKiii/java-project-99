@@ -67,25 +67,23 @@ tasks.test {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
-        xml.required = true
-        html.required = true
+        xml.required.set(true)
+        html.required.set(true)
     }
-    afterEvaluate {
-        classDirectories.setFrom(
-            files(classDirectories.files.map {
-                fileTree(it).apply {
-                    exclude(
-                        "**/hexlet/code/dto/**",
-                        "**/hexlet/code/model/**",
-                        "**/hexlet/code/config/**",
-                        "**/hexlet/code/exception/**",
-                        "**/hexlet/code/component/**",
-                        "**/hexlet/code/AppApplication.class"
-                    )
-                }
-            })
-        )
-    }
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it).apply {
+                exclude(
+                    "**/hexlet/code/dto/**",
+                    "**/hexlet/code/model/**",
+                    "**/hexlet/code/config/**",
+                    "**/hexlet/code/exception/**",
+                    "**/hexlet/code/component/**",
+                    "**/hexlet/code/AppApplication.class"
+                )
+            }
+        })
+    )
 }
 
 sonarqube {
@@ -107,7 +105,6 @@ sonarqube {
 tasks.named("sonar") {
     dependsOn("jacocoTestReport")
 }
-
 
 
 
