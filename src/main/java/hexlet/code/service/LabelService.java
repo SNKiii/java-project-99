@@ -7,7 +7,7 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +16,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
-public class LabelService {
+@RequiredArgsConstructor
+public class LabelService implements ILabelService {
 
     private final LabelRepository labelRepository;
     private final LabelMapper labelMapper;
 
+    @Override
     @Transactional(readOnly = true)
     public List<LabelDTO> getAll() {
         return labelRepository.findAll()
@@ -30,6 +31,7 @@ public class LabelService {
                 .toList();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public LabelDTO getById(Long id) {
         Label label = labelRepository.findById(id)
@@ -37,6 +39,7 @@ public class LabelService {
         return labelMapper.map(label);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public LabelDTO getByName(String name) {
         Label label = labelRepository.findByName(name)
@@ -44,6 +47,7 @@ public class LabelService {
         return labelMapper.map(label);
     }
 
+    @Override
     @Transactional
     public LabelDTO create(LabelCreateDTO createDTO) {
         if (labelRepository.existsByName(createDTO.getName())) {
@@ -54,6 +58,7 @@ public class LabelService {
         return labelMapper.map(label);
     }
 
+    @Override
     @Transactional
     public LabelDTO update(Long id, LabelUpdateDTO updateDTO) {
         Label label = labelRepository.findById(id)
@@ -71,6 +76,7 @@ public class LabelService {
         return labelMapper.map(label);
     }
 
+    @Override
     @Transactional
     public void delete(Long id) {
         if (labelRepository.existsByTasks(id)) {

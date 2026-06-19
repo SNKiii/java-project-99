@@ -18,13 +18,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "jwt.secret=secret_key_for_jwt_token_generation_1234567890_hexlet_project",
+        "jwt.expiration=86400000"
+})
 @AutoConfigureMockMvc
 class TaskControllerFilterTest {
 
@@ -80,7 +83,7 @@ class TaskControllerFilterTest {
         task.setContent("content");
         task.setTaskStatus(testStatus);
         task.setAssignee(testUser);
-        task.setLabels(List.of(testLabel));
+        task.setLabels(Set.of(testLabel));
         taskRepository.save(task);
     }
 

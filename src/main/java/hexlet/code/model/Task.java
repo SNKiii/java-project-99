@@ -1,11 +1,10 @@
 package hexlet.code.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -63,5 +62,5 @@ public class Task implements BaseEntity {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
-    private List<Label> labels = new ArrayList<>();
+    private Set<Label> labels = new HashSet<>();
 }

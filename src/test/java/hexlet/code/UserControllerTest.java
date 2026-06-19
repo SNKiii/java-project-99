@@ -14,14 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Map;
-
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = {
         "jwt.secret=secret_key_for_jwt_token_generation_1234567890_hexlet_project",
@@ -30,10 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest {
 
-    private MockMvc mockMvc;
-
     @Autowired
-    private WebApplicationContext context;
+    private MockMvc mockMvc;
 
     @Autowired
     private UserRepository userRepository;
@@ -55,11 +52,6 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
-
         taskRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -77,12 +69,18 @@ class UserControllerTest {
     void testGetAll() throws Exception {
         mockMvc.perform(get("/api/users")
                         .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[*].id").isNotEmpty())
+                .andExpect(jsonPath("$[*].email").isNotEmpty())
+                .andExpect(jsonPath("$[*].firstName").isNotEmpty())
+                .andExpect(jsonPath("$[*].lastName").isNotEmpty())
+                .andExpect(jsonPath("$[*].password").doesNotExist());
     }
 
     @Test
     void testCreate() throws Exception {
-        UserCreateDTO dto = new UserCreateDTO();
+        var dto = new UserCreateDTO();
         dto.setEmail("newuser@example.com");
         dto.setPassword("password123");
         dto.setFirstName("New");
@@ -92,7 +90,10 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value("newuser@example.com"));
+                .andExpect(jsonPath("$.email").value("newuser@example.com"))
+                .andExpect(jsonPath("$.firstName").value("New"))
+                .andExpect(jsonPath("$.lastName").value("User"))
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
 
     @Test
@@ -100,12 +101,15 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/{id}", testUser.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("test@example.com"));
+                .andExpect(jsonPath("$.email").value("test@example.com"))
+                .andExpect(jsonPath("$.firstName").value("Test"))
+                .andExpect(jsonPath("$.lastName").value("User"))
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
 
     @Test
     void testUpdate() throws Exception {
-        String updateBody = "{\"firstName\":\"UpdatedName\"}";
+        var updateBody = "{\"firstName\":\"UpdatedName\"}";
 
         mockMvc.perform(put("/api/users/{id}", testUser.getId())
                         .header("Authorization", "Bearer " + token)
@@ -122,7 +126,6 @@ class UserControllerTest {
                 .andExpect(status().isNoContent());
     }
 }
-
 
 
 

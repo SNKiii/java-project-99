@@ -19,7 +19,10 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "jwt.secret=secret_key_for_jwt_token_generation_1234567890_hexlet_project",
+        "jwt.expiration=86400000"
+})
 @AutoConfigureMockMvc
 class TaskStatusControllerTest {
 
@@ -68,6 +71,28 @@ class TaskStatusControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("New Status"))
                 .andExpect(jsonPath("$.slug").value("new_status"));
+    }
+
+    @Test
+    @WithMockUser
+    void testCreateWithDuplicateSlug() throws Exception {
+        TaskStatusCreateDTO dto = new TaskStatusCreateDTO();
+        dto.setName("First Status");
+        dto.setSlug("first_status");
+
+        mockMvc.perform(post("/api/task_statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated());
+
+        TaskStatusCreateDTO duplicateDto = new TaskStatusCreateDTO();
+        duplicateDto.setName("Second Status");
+        duplicateDto.setSlug("first_status");
+
+        mockMvc.perform(post("/api/task_statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(duplicateDto)))
+                .andExpect(status().isConflict());
     }
 }
 

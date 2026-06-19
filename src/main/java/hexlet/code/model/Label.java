@@ -1,8 +1,8 @@
 package hexlet.code.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import jakarta.persistence.Entity;
@@ -44,5 +44,5 @@ public class Label implements BaseEntity {
     private LocalDate createdAt;
 
     @ManyToMany(mappedBy = "labels")
-    private List<Task> tasks = new ArrayList<>();
+    private Set<Task> tasks = new HashSet<>();
 }

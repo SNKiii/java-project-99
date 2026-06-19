@@ -3,7 +3,7 @@ package hexlet.code.component;
 import hexlet.code.dto.LabelCreateDTO;
 import hexlet.code.dto.TaskStatusCreateDTO;
 import hexlet.code.dto.UserCreateDTO;
-import hexlet.code.service.LabelService;
+import hexlet.code.service.ILabelService;
 import hexlet.code.service.TaskStatusService;
 import hexlet.code.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class DataInitializer implements ApplicationRunner {
 
     private final UserService userService;
     private final TaskStatusService taskStatusService;
-    private final LabelService labelService;
+    private final ILabelService labelService;
 
     @Override
     public void run(ApplicationArguments args) {

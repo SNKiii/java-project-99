@@ -44,20 +44,10 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/welcome", "/index.html", "/static/**", "/assets/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/assets/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/task_statuses").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/task_statuses/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/labels").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/labels/**").permitAll()
-                        .requestMatchers("/api/tasks/**").authenticated()
-                        .requestMatchers("/api/task_statuses/**").authenticated()
-                        .requestMatchers("/api/labels/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
@@ -69,5 +59,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 }
+
+
 
 
