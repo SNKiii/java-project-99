@@ -27,3 +27,7 @@ REST API приложение на Spring Boot 4 с JWT аутентификац
 - CRUD операции для меток
 - JWT аутентификация
 - Фильтрация задач по параметрам
+
+- Для использования API:
+Email	hexlet@example.com
+Пароль	qwerty
