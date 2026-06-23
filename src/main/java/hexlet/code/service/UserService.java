@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;

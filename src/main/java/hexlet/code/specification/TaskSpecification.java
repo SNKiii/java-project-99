@@ -4,7 +4,6 @@ import hexlet.code.dto.TaskParamsDTO;
 import hexlet.code.model.Task;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import jakarta.persistence.criteria.JoinType;
 
 @Component
 public class TaskSpecification {
@@ -14,20 +13,11 @@ public class TaskSpecification {
             return (root, query, cb) -> cb.conjunction();
         }
 
-        Specification<Task> fetchSpec = (root, query, cb) -> {
-            if (Long.class != query.getResultType() && long.class != query.getResultType()) {
-                root.fetch("labels", JoinType.LEFT);
-                root.fetch("taskStatus", JoinType.LEFT);
-                root.fetch("assignee", JoinType.LEFT);
-            }
-            return cb.conjunction();
-        };
-
-        return Specification.<Task>where(fetchSpec)
-                .and(titleContains(params.getTitleCont()))
-                .and(assigneeIdEquals(params.getAssigneeId()))
-                .and(statusEquals(params.getStatus()))
-                .and(labelIdEquals(params.getLabelId()));
+        Specification<Task> spec = Specification.where(titleContains(params.getTitleCont()));
+        spec = spec.and(assigneeIdEquals(params.getAssigneeId()));
+        spec = spec.and(statusEquals(params.getStatus()));
+        spec = spec.and(labelIdEquals(params.getLabelId()));
+        return spec;
     }
 
     public static Specification<Task> titleContains(String title) {

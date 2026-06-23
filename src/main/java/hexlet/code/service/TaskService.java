@@ -28,7 +28,7 @@ import java.util.Set;
 
 @Service
 @AllArgsConstructor
-public class TaskService {
+public class TaskService implements TaskServiceInterface {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
