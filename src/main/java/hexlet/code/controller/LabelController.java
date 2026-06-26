@@ -7,7 +7,6 @@ import hexlet.code.service.LabelService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,21 +40,18 @@ public class LabelController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("isAuthenticated()")
     public LabelDTO create(@Valid @RequestBody LabelCreateDTO createDTO) {
         return labelService.create(createDTO);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public LabelDTO update(@PathVariable Long id, @Valid @RequestBody LabelUpdateDTO updateDTO) {
         return labelService.update(id, updateDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable Long id) {
         labelService.delete(id);
     }

@@ -54,8 +54,20 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/assets/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/labels", "/api/labels/*").permitAll()
+                        .requestMatchers("/api/labels/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/api/task_statuses", "/api/task_statuses/*").permitAll()
+                        .requestMatchers("/api/task_statuses/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/api/tasks", "/api/tasks/*").permitAll()
+                        .requestMatchers("/api/tasks/**").authenticated()
+
+                        // Все остальные запросы требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

@@ -18,12 +18,13 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class TaskStatusService {
+public class TaskStatusService implements TaskStatusServiceInterface {
 
     private final TaskStatusRepository taskStatusRepository;
     private final TaskStatusMapper taskStatusMapper;
     private final TaskRepository taskRepository;
 
+    @Override
     @Transactional(readOnly = true)
     public List<TaskStatusDTO> getAll() {
         return taskStatusRepository.findAll()
@@ -32,6 +33,7 @@ public class TaskStatusService {
                 .toList();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public TaskStatusDTO getById(Long id) {
         TaskStatus taskStatus = taskStatusRepository.findById(id)
@@ -39,6 +41,7 @@ public class TaskStatusService {
         return taskStatusMapper.map(taskStatus);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public TaskStatusDTO getBySlug(String slug) {
         TaskStatus taskStatus = taskStatusRepository.findBySlug(slug)
@@ -46,6 +49,7 @@ public class TaskStatusService {
         return taskStatusMapper.map(taskStatus);
     }
 
+    @Override
     @Transactional
     public TaskStatusDTO create(TaskStatusCreateDTO createDTO) {
         if (taskStatusRepository.existsBySlug(createDTO.getSlug())) {
@@ -60,6 +64,7 @@ public class TaskStatusService {
         return taskStatusMapper.map(taskStatus);
     }
 
+    @Override
     @Transactional
     public TaskStatusDTO update(Long id, TaskStatusUpdateDTO updateDTO) {
         TaskStatus taskStatus = taskStatusRepository.findById(id)
@@ -84,6 +89,7 @@ public class TaskStatusService {
         return taskStatusMapper.map(taskStatus);
     }
 
+    @Override
     @Transactional
     public void delete(Long id) {
         TaskStatus taskStatus = taskStatusRepository.findById(id)
