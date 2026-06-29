@@ -6,7 +6,7 @@ import hexlet.code.dto.LabelUpdateDTO;
 
 import java.util.List;
 
-public interface ILabelService {
+public interface LabelServiceInterface {
     List<LabelDTO> getAll();
     LabelDTO getById(Long id);
     LabelDTO getByName(String name);

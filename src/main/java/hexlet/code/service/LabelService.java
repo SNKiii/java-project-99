@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class LabelService implements ILabelService {
+public class LabelService implements LabelServiceInterface {
 
     private final LabelRepository labelRepository;
     private final LabelMapper labelMapper;

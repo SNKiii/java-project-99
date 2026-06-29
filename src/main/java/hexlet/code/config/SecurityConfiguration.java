@@ -40,14 +40,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter() {
-        return new JWTAuthenticationFilter(jwtService, userDetailsService);
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   DaoAuthenticationProvider authenticationProvider,
-                                                   JWTAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+                                                   DaoAuthenticationProvider authenticationProvider) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -67,19 +61,23 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/tasks", "/api/tasks/*").permitAll()
                         .requestMatchers("/api/tasks/**").authenticated()
 
-                        // Все остальные запросы требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }
-}
 
+    @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter() {
+        return new JWTAuthenticationFilter(jwtService, userDetailsService);
+    }
+}
 
 
 
