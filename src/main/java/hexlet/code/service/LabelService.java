@@ -51,8 +51,8 @@ public class LabelService implements LabelServiceInterface {
     @Transactional
     public LabelDTO create(LabelCreateDTO createDTO) {
         if (labelRepository.existsByName(createDTO.getName())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Label with name '" + createDTO.getName() + "' already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Label with name '" + createDTO.getName() + "' already exists");
         }
         Label label = labelMapper.map(createDTO);
         labelRepository.save(label);
@@ -65,12 +65,14 @@ public class LabelService implements LabelServiceInterface {
         Label label = labelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
 
-        updateDTO.getName().ifPresent(newName -> {
-            if (!newName.equals(label.getName()) && labelRepository.existsByName(newName)) {
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Label with name '" + newName + "' already exists");
-            }
-        });
+        if (updateDTO.getName() != null) {
+            updateDTO.getName().ifPresent(newName -> {
+                if (!newName.equals(label.getName()) && labelRepository.existsByName(newName)) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT,
+                            "Label with name '" + newName + "' already exists");
+                }
+            });
+        }
 
         labelMapper.update(updateDTO, label);
         labelRepository.save(label);
@@ -83,6 +85,7 @@ public class LabelService implements LabelServiceInterface {
         if (labelRepository.existsByTasks(id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete label with existing tasks");
         }
+
         labelRepository.deleteById(id);
     }
 }
