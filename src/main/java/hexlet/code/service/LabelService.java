@@ -8,10 +8,8 @@ import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -50,10 +48,6 @@ public class LabelService implements LabelServiceInterface {
     @Override
     @Transactional
     public LabelDTO create(LabelCreateDTO createDTO) {
-        if (labelRepository.existsByName(createDTO.getName())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Label with name '" + createDTO.getName() + "' already exists");
-        }
         Label label = labelMapper.map(createDTO);
         labelRepository.save(label);
         return labelMapper.map(label);
@@ -65,15 +59,6 @@ public class LabelService implements LabelServiceInterface {
         Label label = labelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
 
-        if (updateDTO.getName() != null) {
-            updateDTO.getName().ifPresent(newName -> {
-                if (!newName.equals(label.getName()) && labelRepository.existsByName(newName)) {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT,
-                            "Label with name '" + newName + "' already exists");
-                }
-            });
-        }
-
         labelMapper.update(updateDTO, label);
         labelRepository.save(label);
         return labelMapper.map(label);
@@ -82,10 +67,6 @@ public class LabelService implements LabelServiceInterface {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (labelRepository.existsByTasks(id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete label with existing tasks");
-        }
-
         labelRepository.deleteById(id);
     }
 }

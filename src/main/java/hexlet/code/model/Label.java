@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +38,7 @@ public class Label implements BaseEntity {
 
     @NotBlank
     @Size(min = 3, max = 1000)
+    @Column(unique = true)
     @ToString.Include
     private String name;
 
