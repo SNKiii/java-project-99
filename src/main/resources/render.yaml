@@ -1,7 +1,7 @@
 services:
   - type: web
     name: java-project-99
-    runtime: image
+    runtime: docker
     repo: https://github.com/SNKiii/java-project-99
     plan: free
     envVars:
@@ -19,8 +19,6 @@ services:
         fromDatabase:
           name: app-db
           property: password
-    buildCommand: ./gradlew bootJar
-    startCommand: java -jar build/libs/*.jar
 
 databases:
   - name: app-db
