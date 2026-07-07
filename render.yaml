@@ -1,7 +1,7 @@
 services:
   - type: web
     name: java-project-99
-    runtime: docker
+    runtime: image
     repo: https://github.com/SNKiii/java-project-99
     plan: free
     dockerfilePath: ./Dockerfile
