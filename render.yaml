@@ -1,11 +1,10 @@
 services:
   - type: web
     name: java-project-99
-    runtime: image
-    buildCommand: ./gradlew bootJar
-    startCommand: java -jar build/libs/*.jar
+    runtime: docker
     repo: https://github.com/SNKiii/java-project-99
     plan: free
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
