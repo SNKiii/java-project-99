@@ -3,7 +3,7 @@
 [![SonarQube](https://github.com/SNKiii/java-project-99/actions/workflows/build.yml/badge.svg)](https://github.com/SNKiii/java-project-99/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SNKiii_java-project-99&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SNKiii_java-project-99)
 
-work app -> https://java-project-99-n8ow.onrender.com
+work app -> https://java-project-99-yms2.onrender.com
 REST API приложение на Spring Boot 4 с JWT аутентификацией и управлением задачами.
 
 ## Технологии
