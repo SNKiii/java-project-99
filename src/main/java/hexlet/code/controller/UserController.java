@@ -7,6 +7,8 @@ import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +30,15 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserResponseDTO> index() {
-        return userService.getAll();
+    public ResponseEntity<List<UserResponseDTO>> index() {
+        List<UserResponseDTO> users = userService.getAll();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(users.size()));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(users);
     }
 
     @GetMapping("/{id}")

@@ -8,6 +8,8 @@ import hexlet.code.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,9 +30,15 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping("")
-    @ResponseStatus(HttpStatus.OK)
-    public List<TaskDTO> index(TaskParamsDTO params) {
-        return taskService.getAll(params);
+    public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO params) {
+        List<TaskDTO> tasks = taskService.getAll(params);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(tasks.size()));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(tasks);
     }
 
     @GetMapping("/{id}")

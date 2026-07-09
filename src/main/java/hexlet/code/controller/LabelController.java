@@ -7,6 +7,8 @@ import hexlet.code.service.LabelService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +29,15 @@ public class LabelController {
     private final LabelService labelService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<LabelDTO> index() {
-        return labelService.getAll();
+    public ResponseEntity<List<LabelDTO>> index() {
+        List<LabelDTO> labels = labelService.getAll();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(labels.size()));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(labels);
     }
 
     @GetMapping("/{id}")
