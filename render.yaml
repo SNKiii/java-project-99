@@ -8,8 +8,16 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: DATABASE_URL
+      - key: SPRING_DATASOURCE_URL
         value: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: app-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: app-db
+          property: password
       - key: DB_HOST
         fromDatabase:
           name: app-db
@@ -22,14 +30,6 @@ services:
         fromDatabase:
           name: app-db
           property: database
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: app-db
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: app-db
-          property: password
 
 databases:
   - name: app-db
