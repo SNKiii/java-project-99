@@ -1,7 +1,6 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.AuthRequestDTO;
-import hexlet.code.dto.AuthResponseDTO;
 import hexlet.code.config.JWTService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public AuthResponseDTO login(@Valid @RequestBody AuthRequestDTO authRequest) {
+    public String login(@Valid @RequestBody AuthRequestDTO authRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getUsername(),
@@ -32,7 +31,6 @@ public class AuthController {
                 )
         );
 
-        String token = jwtService.generateToken(authRequest.getUsername());
-        return new AuthResponseDTO(token);
+        return jwtService.generateToken(authRequest.getUsername());
     }
 }
