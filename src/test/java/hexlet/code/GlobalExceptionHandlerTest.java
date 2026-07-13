@@ -11,7 +11,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -45,6 +44,8 @@ class GlobalExceptionHandlerTest {
     @Autowired
     private JWTService jwtService;
 
+    private String token;
+
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders
@@ -60,12 +61,14 @@ class GlobalExceptionHandlerTest {
         user.setFirstName("Test");
         user.setLastName("User");
         userRepository.save(user);
+
+        token = jwtService.generateToken(user.getEmail());
     }
 
     @Test
-    @WithMockUser
     void testResourceNotFoundException() throws Exception {
-        mockMvc.perform(get("/api/users/{id}", 999L))
+        mockMvc.perform(get("/api/users/{id}", 999L)
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("User with id 999 not found"));
     }

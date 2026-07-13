@@ -1,5 +1,6 @@
 package hexlet.code.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,16 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
         log.warn("Validation error: {}", errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException e) {
+        Map<String, String> errors = new HashMap<>();
+        e.getConstraintViolations().forEach(v ->
+                errors.put(v.getPropertyPath().toString(), v.getMessage())
+        );
+        log.warn("Entity validation error: {}", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
